@@ -36,6 +36,10 @@ is_tmux_running() {
     [ ! -z "$TMUX" ]
 }
 
+
+
+cd `dirname $0`
+
 # Check screen is installed.
 check_screen_installed
 
