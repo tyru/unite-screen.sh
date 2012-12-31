@@ -24,7 +24,9 @@ endfunction
 
 function! s:get_screen_window_list()
     " Parse screen output.
-    let out = system('screen -Q windows')
+
+    " NOTE: ./unite-screen called 'screen -X windows' before.
+    let out = system('screen -Q "@lastmsg"')
     let windows = []
     let re = '\(\d\+\)\([*-]\?\) \(.\{-1,}\)\%(  \|$\)'
     while out != ''

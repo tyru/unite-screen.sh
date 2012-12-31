@@ -28,6 +28,13 @@ check_unite_screen_installed() {
         exit 1
     fi
 }
+is_screen_running() {
+    # tscreen also uses this varariable.
+    [ ! -z "$WINDOW" ]
+}
+is_tmux_running() {
+    [ ! -z "$TMUX" ]
+}
 
 # Check screen is installed.
 check_screen_installed
@@ -47,4 +54,7 @@ while [ $# -ne 0 ]; do
 done
 export OPT_ALL
 
-vim -c 'set rtp+=$PWD' -c 'Unite screen'
+if is_screen_running; then
+    screen -X windows
+fi
+vim -c 'while getchar(0) | echon "" | endwhile' -c 'set rtp+=$PWD' -c 'Unite screen'
