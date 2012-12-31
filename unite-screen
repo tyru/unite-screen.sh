@@ -43,7 +43,10 @@ cd `dirname $0`
 # Check screen is installed.
 check_screen_installed
 
-# Check unite.vim and unite-screen.vim are installed.
+# TODO: Check unite.vim and unite-screen.vim are installed.
+# NOTE: Currently disabled for 2 reasons.
+# * Heavy to invoke vim command twice
+# * this function won't work
 # check_unite_screen_installed
 
 OPT_ALL=false
@@ -61,4 +64,7 @@ export OPT_ALL
 if is_screen_running; then
     screen -X windows
 fi
+
+# 'while getchar(0) ...' is Ex command
+# to skip typed characters before vim started.
 vim -c 'while getchar(0) | echon "" | endwhile' -c 'set rtp+=$PWD' -c 'Unite screen'
