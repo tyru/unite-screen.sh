@@ -1,0 +1,50 @@
+#!/bin/sh
+set -e
+
+check_screen_installed() {
+    if ! which screen >/dev/null; then
+        echo "error: screen is not installed." >&2
+        exit 1
+    fi
+}
+check_unite_screen_installed() {
+    tmpfile=`mktemp`
+    >$tmpfile
+    vim -c 'set rtp+=$PWD' \
+        -c "redir! > $tmpfile" \
+        -c 'silent echo globpath(&rtp, "autoload/unite.vim") != "" ? "unite" : ""' \
+        -c 'silent echo globpath(&rtp, "autoload/unite/autoload/sources/screen.vim") != "" ? "unite-screen" : ""' \
+        -c 'redir END' \
+        -c 'qa!'
+
+    if ! grep -q -x 'unite' "$tmpfile"; then
+        rm -f "$tmpfile"
+        echo "error: you have not installed unite.vim" >&2
+        exit 1
+    fi
+    if ! grep -q -x 'unite-screen'; then
+        rm -f "$tmpfile"
+        echo "error: you have not installed unite-screen.vim" >&2
+        exit 1
+    fi
+}
+
+# Check screen is installed.
+check_screen_installed
+
+# Check unite.vim and unite-screen.vim are installed.
+# check_unite_screen_installed
+
+OPT_ALL=false
+while [ $# -ne 0 ]; do
+    case "$1" in
+        -a|--all) OPT_ALL=true
+            ;;
+        --) shift; break
+            ;;
+    esac
+    shift
+done
+export OPT_ALL
+
+vim -c 'set rtp+=$PWD' -c 'Unite screen'
